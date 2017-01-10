@@ -1,0 +1,33 @@
+{
+  "name": "flora-auth-jwt",
+  "version": "0.0.0",
+  "description": "JSON Web Token authentication for Flora",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint index.js"
+  },
+  "author": {
+    "name": "BörseGo AG",
+    "email": "it@boerse-go.de"
+  },
+  "license": "MIT",
+  "repository": "godmodelabs/flora-auth-jwt",
+  "contributors": [
+    {
+      "name": "Nico Kaiser",
+      "email": "nico.kaiser@boerse-go.de"
+    }
+  ],
+  "engines": {
+    "node": ">=6"
+  },
+  "dependencies": {
+    "jsonwebtoken": "^5.0.0",
+    "flora-errors": "^0.7.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.10.2",
+    "eslint-config-airbnb-base": "^11.0.0",
+    "eslint-plugin-import": "^2.2.0"
+  }
+}
