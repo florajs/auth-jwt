@@ -22,7 +22,7 @@
     "node": ">=6"
   },
   "dependencies": {
-    "jsonwebtoken": "^5.0.0",
+    "jsonwebtoken": "^7.2.1",
     "flora-errors": "^0.7.0"
   },
   "devDependencies": {
