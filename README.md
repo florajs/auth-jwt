@@ -22,3 +22,8 @@ server.register({
 });
 server.run();
 ```
+
+License
+-------
+
+[MIT](LICENSE)
