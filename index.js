@@ -35,10 +35,14 @@ exports.register = function register(api, options) {
             jwt.verify(token, options.secret, (err, decoded) => {
                 if (err && err.message === 'jwt expired') {
                     api.log.trace(err);
-                    return callback(new AuthenticationError('Expired token received for JSON Web Token validation'));
+                    const e = new AuthenticationError('Expired token received for JSON Web Token validation');
+                    e.code = 'ERR_TOKEN_EXPIRED';
+                    return callback(e);
                 } else if (err) {
                     api.log.trace(err);
-                    return callback(new AuthenticationError('Invalid signature received for JSON Web Token validation'));
+                    const e = new AuthenticationError('Invalid signature received for JSON Web Token validation');
+                    e.code = 'ERR_INVALID_TOKEN_SIGNATURE';
+                    return callback(e);
                 }
 
                 api.log.trace('Verified authentication token: ', decoded);
@@ -85,6 +89,8 @@ exports.register = function register(api, options) {
 
     api.on('request', (ev, next) => {
         if (ev.request._auth || !options.credentialsRequired) return next();
-        return next(new AuthenticationError('No authorization token was found'));
+        const e = new AuthenticationError('No authorization token was found');
+        e.code = 'ERR_MISSING_TOKEN';
+        return next(e);
     });
 };
