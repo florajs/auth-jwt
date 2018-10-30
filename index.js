@@ -38,7 +38,9 @@ exports.register = function register(api, options) {
                     const e = new AuthenticationError('Expired token received for JSON Web Token validation');
                     e.code = 'ERR_TOKEN_EXPIRED';
                     return callback(e);
-                } else if (err) {
+                }
+
+                if (err) {
                     api.log.trace(err);
                     const e = new AuthenticationError('Invalid signature received for JSON Web Token validation');
                     e.code = 'ERR_INVALID_TOKEN_SIGNATURE';

@@ -1,10 +1,12 @@
-flora-auth-jwt
-==============
+# flora-auth-jwt
+
+[![Build Status](https://travis-ci.org/godmodelabs/flora-auth-jwt.svg?branch=master)](https://travis-ci.org/godmodelabs/flora-auth-jwt)
+[![NPM version](https://badge.fury.io/js/flora-auth-jwt.svg)](https://www.npmjs.com/package/flora-auth-jwt)
+[![Dependencies](https://img.shields.io/david/godmodelabs/flora-auth-jwt.svg)](https://david-dm.org/godmodelabs/flora-auth-jwt)
 
 JSON Web Token authentication for Flora.
 
-Example
--------
+## Example
 
 ```js
 const flora = require('flora');
@@ -23,7 +25,6 @@ server.register({
 server.run();
 ```
 
-License
--------
+## License
 
 [MIT](LICENSE)

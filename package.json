@@ -4,8 +4,10 @@
   "description": "JSON Web Token authentication for Flora",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint index.js"
+    "lint": "eslint .",
+    "test": "eslint ."
   },
+  "pre-commit": "test",
   "author": {
     "name": "BörseGo AG",
     "email": "it@boerse-go.de"
@@ -19,15 +21,16 @@
     }
   ],
   "engines": {
-    "node": ">=6"
+    "node": ">=8"
   },
   "dependencies": {
-    "jsonwebtoken": "^8.2.0",
-    "flora-errors": "^0.8.0"
+    "jsonwebtoken": "^8.3.0",
+    "flora-errors": "^0.9.0"
   },
   "devDependencies": {
-    "eslint": "^4.19.0",
-    "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.9.0"
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "pre-commit": "^1.2.2"
   }
 }
