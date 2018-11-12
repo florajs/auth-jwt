@@ -11,88 +11,87 @@ exports.register = function register(api, options) {
 
     options.credentialsRequired = !!options.credentialsRequired;
 
-    api.on('request', (ev, next) => {
+    api.on('request', async (ev) => {
         const request = ev.request;
 
         // decode and verify JSON Web Token
-        function decode(token, callback) {
+        async function decode(token) {
             if (!token) {
                 if (typeof options.validate !== 'function') {
                     request._auth = null;
-                    callback();
-                    return;
+                    return null;
                 }
-                options.validate(null, request, (validationErr, validated) => {
-                    if (validationErr) return callback(validationErr);
-                    request._auth = validated || null;
-                    return callback();
-                });
-                return;
+
+                const validated = await options.validate(null, request);
+                request._auth = validated || null;
+                return null;
             }
 
-            api.log.trace('Verifying JWT: ' + token);
+            return new Promise((resolve, reject) => {
+                api.log.trace('Verifying JWT: ' + token);
 
-            jwt.verify(token, options.secret, (err, decoded) => {
-                if (err && err.message === 'jwt expired') {
-                    api.log.trace(err);
-                    const e = new AuthenticationError('Expired token received for JSON Web Token validation');
-                    e.code = 'ERR_TOKEN_EXPIRED';
-                    return callback(e);
-                }
+                jwt.verify(token, options.secret, (err, decoded) => {
+                    if (err && err.message === 'jwt expired') {
+                        api.log.trace(err);
+                        const e = new AuthenticationError('Expired token received for JSON Web Token validation');
+                        e.code = 'ERR_TOKEN_EXPIRED';
+                        return reject(e);
+                    }
 
-                if (err) {
-                    api.log.trace(err);
-                    const e = new AuthenticationError('Invalid signature received for JSON Web Token validation');
-                    e.code = 'ERR_INVALID_TOKEN_SIGNATURE';
-                    return callback(e);
-                }
+                    if (err) {
+                        api.log.trace(err);
+                        const e = new AuthenticationError('Invalid signature received for JSON Web Token validation');
+                        e.code = 'ERR_INVALID_TOKEN_SIGNATURE';
+                        return reject(e);
+                    }
 
-                api.log.trace('Verified authentication token: ', decoded);
+                    api.log.trace('Verified authentication token: ', decoded);
 
-                if (typeof options.validate !== 'function') {
-                    request._auth = decoded;
-                    return callback();
-                }
+                    if (typeof options.validate !== 'function') {
+                        request._auth = decoded;
+                        return resolve();
+                    }
 
-                return options.validate(decoded, request, (validationErr, validated) => {
-                    if (validationErr) return callback(validationErr);
-                    if (!request._auth) request._auth = validated || decoded;
-                    return callback();
+                    return options.validate(decoded, request, (validationErr, validated) => {
+                        if (validationErr) return reject(validationErr);
+                        if (!request._auth) request._auth = validated || decoded;
+                        return resolve();
+                    });
                 });
             });
         }
 
         // already authenticated
-        if (request._auth) return next();
+        if (request._auth) return null;
 
         // request parameter "access_token" (POST, GET or native)
         if (request.access_token) {
             api.log.trace('Using access_token in request parameters: ' + request.access_token);
-            return decode(request.access_token, next);
+            return decode(request.access_token);
         }
 
         // HTTP "Authorization" header
         if (request._httpRequest && request._httpRequest.headers.authorization) {
             const parts = request._httpRequest.headers.authorization.split(' ');
-            if (parts.length !== 2) return next(new RequestError('Bad HTTP authentication header format'));
-            if (parts[0].toLowerCase() !== 'bearer') return next();
+            if (parts.length !== 2) throw new RequestError('Bad HTTP authentication header format');
+            if (parts[0].toLowerCase() !== 'bearer') return null;
             if (parts[1].split('.').length !== 3) {
-                return next(new RequestError('Bad HTTP authentication header format'));
+                throw new RequestError('Bad HTTP authentication header format');
             }
 
             api.log.trace('Using token from HTTP Authorization header: ' + parts[1]);
-            return decode(parts[1], next);
+            return decode(parts[1]);
         }
 
-        return decode(null, next);
+        return decode(null);
     });
 
     if (options.credentialsRequired) return;
 
-    api.on('request', (ev, next) => {
-        if (ev.request._auth || !options.credentialsRequired) return next();
+    api.on('request', (ev) => {
+        if (ev.request._auth || !options.credentialsRequired) return;
         const e = new AuthenticationError('No authorization token was found');
         e.code = 'ERR_MISSING_TOKEN';
-        return next(e);
+        throw e;
     });
 };
