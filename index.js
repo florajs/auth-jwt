@@ -11,7 +11,7 @@ exports.register = function register(api, options) {
 
     options.credentialsRequired = !!options.credentialsRequired;
 
-    api.on('request', async (ev) => {
+    api.on('request', async ev => {
         const request = ev.request;
 
         // decode and verify JSON Web Token
@@ -88,7 +88,7 @@ exports.register = function register(api, options) {
 
     if (options.credentialsRequired) return;
 
-    api.on('request', (ev) => {
+    api.on('request', ev => {
         if (ev.request._auth || !options.credentialsRequired) return;
         const e = new AuthenticationError('No authorization token was found');
         e.code = 'ERR_MISSING_TOKEN';
