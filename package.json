@@ -21,11 +21,11 @@
     }
   ],
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   },
   "dependencies": {
-    "jsonwebtoken": "^8.3.0",
-    "flora-errors": "^0.9.0"
+    "jsonwebtoken": "^8.4.0",
+    "flora-errors": "^0.9.1"
   },
   "devDependencies": {
     "eslint": "^5.8.0",
