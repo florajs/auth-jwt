@@ -56,11 +56,11 @@ module.exports = (api, options) => {
                         return resolve();
                     }
 
-                    return options.validate(decoded, request, (validationErr, validated) => {
-                        if (validationErr) return reject(validationErr);
-                        if (!request._auth) request._auth = validated || decoded;
-                        return resolve();
-                    });
+                    return resolve(
+                        options.validate(decoded, request).then(validated => {
+                            if (!request._auth) request._auth = validated || decoded;
+                        })
+                    );
                 });
             });
         }
