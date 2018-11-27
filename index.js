@@ -3,11 +3,15 @@
 const jwt = require('jsonwebtoken');
 const { AuthenticationError, RequestError } = require('flora-errors');
 
-exports.name = 'auth-jwt';
-
-exports.register = function register(api, options) {
-    if (typeof options !== 'object') throw new Error('opts must be an object');
-    if (!options.secret) throw new Error('opts must contain a "secret" property');
+/**
+ * @param {flora.Api} api - Api instance
+ * @param {object} options - Plugin options
+ * @param {string} options.secret - JWT secret
+ * @param {boolean} [options.credentialsRequired] - Fail on requests without JWT (default: false)
+ */
+module.exports = (api, options) => {
+    if (typeof options !== 'object') throw new Error('options must be an object');
+    if (!options.secret) throw new Error('options must contain a "secret" property');
 
     options.credentialsRequired = !!options.credentialsRequired;
 

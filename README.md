@@ -10,11 +10,11 @@ JSON Web Token authentication for Flora.
 
 ```js
 const flora = require('flora');
-const floraAuth = require('flora-auth-jwt');
+const floraAuthJwt = require('flora-auth-jwt');
 
 const server = new flora.Server('./config.js');
 
-server.register({
+server.register('auth-jwt', floraAuthJwt, {
     secret: 'My Secret Key',
     credentialsRequired: false, // default: true
     validate: async (jwt, request) => {
