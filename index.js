@@ -15,54 +15,44 @@ module.exports = (api, options) => {
 
     options.credentialsRequired = !!options.credentialsRequired;
 
-    api.on('request', async ev => {
-        const request = ev.request;
-
-        // decode and verify JSON Web Token
+    api.on('request', async ({ request }) => {
+        /**
+         * Decode and verify JSON Web Token
+         * @private
+         */
         async function decode(token) {
-            if (!token) {
-                if (typeof options.validate !== 'function') {
-                    request._auth = null;
-                    return null;
-                }
-
-                const validated = await options.validate(null, request);
-                request._auth = validated || null;
-                return null;
-            }
-
-            return new Promise((resolve, reject) => {
+            let decoded = null;
+            if (token) {
                 api.log.trace('Verifying JWT: ' + token);
 
-                jwt.verify(token, options.secret, (err, decoded) => {
-                    if (err && err.message === 'jwt expired') {
-                        api.log.trace(err);
+                try {
+                    decoded = jwt.verify(token, options.secret);
+                } catch (err) {
+                    api.log.trace(err);
+
+                    if (err.message === 'jwt expired') {
                         const e = new AuthenticationError('Expired token received for JSON Web Token validation');
                         e.code = 'ERR_TOKEN_EXPIRED';
-                        return reject(e);
+                        throw e;
                     }
 
-                    if (err) {
-                        api.log.trace(err);
-                        const e = new AuthenticationError('Invalid signature received for JSON Web Token validation');
-                        e.code = 'ERR_INVALID_TOKEN_SIGNATURE';
-                        return reject(e);
-                    }
+                    const e = new AuthenticationError('Invalid signature received for JSON Web Token validation');
+                    e.code = 'ERR_INVALID_TOKEN_SIGNATURE';
+                    throw e;
+                }
 
-                    api.log.trace('Verified authentication token: ', decoded);
+                api.log.trace('Verified authentication token: ', decoded);
+            }
 
-                    if (typeof options.validate !== 'function') {
-                        request._auth = decoded;
-                        return resolve();
-                    }
+            const validated = typeof options.validate === 'function' ? await options.validate(decoded, request) : decoded;
 
-                    return resolve(
-                        options.validate(decoded, request).then(validated => {
-                            if (!request._auth) request._auth = validated || decoded;
-                        })
-                    );
-                });
-            });
+            if (!request._auth) request._auth = validated;
+
+            if (options.credentialsRequired && !request._auth) {
+                const e = new AuthenticationError('No authorization token was found');
+                e.code = 'ERR_MISSING_TOKEN';
+                throw e;
+            }
         }
 
         // already authenticated
@@ -88,14 +78,5 @@ module.exports = (api, options) => {
         }
 
         return decode(null);
-    });
-
-    if (options.credentialsRequired) return;
-
-    api.on('request', ev => {
-        if (ev.request._auth || !options.credentialsRequired) return;
-        const e = new AuthenticationError('No authorization token was found');
-        e.code = 'ERR_MISSING_TOKEN';
-        throw e;
     });
 };
