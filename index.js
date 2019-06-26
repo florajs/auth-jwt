@@ -46,6 +46,7 @@ module.exports = (api, options) => {
 
             const validated = typeof options.validate === 'function' ? await options.validate(decoded, request) : decoded;
 
+            // eslint-disable-next-line require-atomic-updates
             if (!request._auth) request._auth = validated;
 
             if (options.credentialsRequired && !request._auth) {
