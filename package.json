@@ -1,6 +1,6 @@
 {
   "name": "flora-auth-jwt",
-  "version": "2.0.0-alpha.4",
+  "version": "2.0.0",
   "description": "JSON Web Token authentication for Flora",
   "main": "index.js",
   "scripts": {
