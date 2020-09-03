@@ -7,6 +7,7 @@ const { AuthenticationError, RequestError } = require('flora-errors');
  * @param {flora.Api} api - Api instance
  * @param {object} options - Plugin options
  * @param {string} options.secret - JWT secret
+ * @param {Array} [options.algorithms] - Allowed JWT algorithms
  * @param {boolean} [options.credentialsRequired] - Fail on requests without JWT (default: false)
  */
 module.exports = (api, options) => {
@@ -25,14 +26,25 @@ module.exports = (api, options) => {
             if (token) {
                 api.log.trace('Verifying JWT: ' + token);
 
+                const verifyOptions = {};
+                if (options.algorithms) verifyOptions.algorithms = options.algorithms;
+
                 try {
-                    decoded = jwt.verify(token, options.secret);
+                    decoded = jwt.verify(token, options.secret, verifyOptions);
                 } catch (err) {
                     api.log.trace(err);
 
                     if (err.message === 'jwt expired') {
                         const e = new AuthenticationError('Expired token received for JSON Web Token validation');
                         e.code = 'ERR_TOKEN_EXPIRED';
+                        throw e;
+                    }
+
+                    if (err.message === 'invalid algorithm') {
+                        const e = new AuthenticationError(
+                            'Invalid token algorithm received for JSON Web Token validation'
+                        );
+                        e.code = 'ERR_INVALID_ALGORITHM';
                         throw e;
                     }
 
