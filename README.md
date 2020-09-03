@@ -38,6 +38,7 @@ const server = new flora.Server('./config.js');
 
 server.register('auth-jwt', floraAuthJwt, {
     secret: 'My Secret Key',
+    algorithms: ['HS256'], // optional
     credentialsRequired: false, // default: true
     validate: async (jwt, request) => {
         // return value will go to request._auth
