@@ -3,10 +3,19 @@
 const jwt = require('jsonwebtoken');
 const { AuthenticationError, RequestError } = require('flora-errors');
 
+function verify(token, secret, options) {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, secret, options, (err, decoded) => {
+            if (err) return reject(err);
+            return resolve(decoded);
+        });
+    });
+}
+
 /**
  * @param {flora.Api} api - Api instance
  * @param {object} options - Plugin options
- * @param {string} options.secret - JWT secret
+ * @param {string|function} options.secret - JWT secret
  * @param {Array} [options.algorithms] - Allowed JWT algorithms
  * @param {boolean} [options.credentialsRequired] - Fail on requests without JWT (default: false)
  */
@@ -30,7 +39,7 @@ module.exports = (api, options) => {
                 if (options.algorithms) verifyOptions.algorithms = options.algorithms;
 
                 try {
-                    decoded = jwt.verify(token, options.secret, verifyOptions);
+                    decoded = await verify(token, options.secret, verifyOptions);
                 } catch (err) {
                     api.log.trace(err);
 

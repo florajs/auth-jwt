@@ -71,6 +71,24 @@ describe('flora-auth-jwt', () => {
         expect(request._auth).to.eql({ foo: 'bar' });
     });
 
+    it('decodes JWT when secret is a function', async () => {
+        const request = {
+            access_token: jwt.sign(
+                {
+                    foo: 'bar',
+                },
+                secret,
+                {
+                    noTimestamp: true,
+                    algorithm: 'HS256',
+                }
+            ),
+        };
+        floraAuthJwt(api, { secret: (header, callback) => callback(null, secret) });
+        await api.emit('request', { request });
+        expect(request._auth).to.eql({ foo: 'bar' });
+    });
+
     it('throws if JWT has expired', (done) => {
         const request = {
             access_token: jwt.sign(
