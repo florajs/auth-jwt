@@ -1,8 +1,8 @@
 # flora-auth-jwt
 
-[![Build Status](https://travis-ci.org/godmodelabs/flora-auth-jwt.svg?branch=master)](https://travis-ci.org/godmodelabs/flora-auth-jwt)
-[![NPM version](https://badge.fury.io/js/flora-auth-jwt.svg)](https://www.npmjs.com/package/flora-auth-jwt)
-[![Dependencies](https://img.shields.io/david/godmodelabs/flora-auth-jwt.svg)](https://david-dm.org/godmodelabs/flora-auth-jwt)
+![](https://github.com/godmodelabs/flora-auth-jwt/workflows/ci/badge.svg)
+[![NPM version](https://img.shields.io/npm/v/flora-auth-jwt.svg?style=flat)](https://www.npmjs.com/package/flora-auth-jwt)
+[![NPM downloads](https://img.shields.io/npm/dm/flora-auth-jwt.svg?style=flat)](https://www.npmjs.com/package/flora-auth-jwt)
 
 JSON Web Token authentication for Flora.
 
