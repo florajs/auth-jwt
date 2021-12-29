@@ -1,5 +1,3 @@
-/* global describe, it, beforeEach */
-
 'use strict';
 
 const PromiseEventEmitter = require('promise-events');
@@ -39,7 +37,7 @@ describe('flora-auth-jwt', () => {
 
     it('do nothing if request._auth is already set', () => {
         const request = {
-            _auth: 'AUTH',
+            _auth: 'AUTH'
         };
         floraAuthJwt(api, { secret: 'mySecret' });
         api.emit('request', { request });
@@ -57,14 +55,14 @@ describe('flora-auth-jwt', () => {
         const request = {
             access_token: jwt.sign(
                 {
-                    foo: 'bar',
+                    foo: 'bar'
                 },
                 secret,
                 {
                     noTimestamp: true,
-                    algorithm: 'HS256',
+                    algorithm: 'HS256'
                 }
-            ),
+            )
         };
         floraAuthJwt(api, { secret });
         await api.emit('request', { request });
@@ -75,14 +73,14 @@ describe('flora-auth-jwt', () => {
         const request = {
             access_token: jwt.sign(
                 {
-                    foo: 'bar',
+                    foo: 'bar'
                 },
                 secret,
                 {
                     noTimestamp: true,
-                    algorithm: 'HS256',
+                    algorithm: 'HS256'
                 }
-            ),
+            )
         };
         floraAuthJwt(api, { secret: (header, callback) => callback(null, secret) });
         await api.emit('request', { request });
@@ -93,15 +91,15 @@ describe('flora-auth-jwt', () => {
         const request = {
             access_token: jwt.sign(
                 {
-                    foo: 'bar',
+                    foo: 'bar'
                 },
                 secret,
                 {
                     noTimestamp: true,
                     algorithm: 'HS256',
-                    expiresIn: -1,
+                    expiresIn: -1
                 }
-            ),
+            )
         };
         floraAuthJwt(api, { secret });
         api.emit('request', { request })
@@ -117,7 +115,7 @@ describe('flora-auth-jwt', () => {
 
     it('throws if access_token is not a JWT', (done) => {
         const request = {
-            access_token: 'xyzzy',
+            access_token: 'xyzzy'
         };
         floraAuthJwt(api, { secret: 'foo' });
         api.emit('request', { request })
@@ -135,14 +133,14 @@ describe('flora-auth-jwt', () => {
         const request = {
             access_token: jwt.sign(
                 {
-                    foo: 'bar',
+                    foo: 'bar'
                 },
                 secret,
                 {
                     noTimestamp: true,
-                    algorithm: 'HS256',
+                    algorithm: 'HS256'
                 }
-            ),
+            )
         };
         floraAuthJwt(api, { secret: 'foo' });
         api.emit('request', { request })
@@ -160,14 +158,14 @@ describe('flora-auth-jwt', () => {
         const request = {
             access_token: jwt.sign(
                 {
-                    foo: 'bar',
+                    foo: 'bar'
                 },
                 secret,
                 {
                     noTimestamp: true,
-                    algorithm: 'HS384',
+                    algorithm: 'HS384'
                 }
-            ),
+            )
         };
         floraAuthJwt(api, { secret, algorithms: ['HS256'] });
         api.emit('request', { request })
@@ -185,14 +183,14 @@ describe('flora-auth-jwt', () => {
         const request = {
             access_token: jwt.sign(
                 {
-                    foo: 'bar',
+                    foo: 'bar'
                 },
                 secret,
                 {
                     noTimestamp: true,
-                    algorithm: 'none',
+                    algorithm: 'none'
                 }
-            ),
+            )
         };
         floraAuthJwt(api, { secret });
         api.emit('request', { request })
