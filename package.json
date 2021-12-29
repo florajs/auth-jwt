@@ -8,6 +8,9 @@
     "pretest": "npm run lint",
     "test": "mocha"
   },
+  "files": [
+    "index.js"
+  ],
   "pre-commit": "test",
   "author": {
     "name": "BörseGo AG",
