@@ -1,7 +1,7 @@
 'use strict';
 
 const jwt = require('jsonwebtoken');
-const { AuthenticationError, RequestError } = require('flora-errors');
+const { AuthenticationError, RequestError } = require('@florajs/errors');
 
 function verify(token, secret, options) {
     return new Promise((resolve, reject) => {

@@ -1,8 +1,8 @@
-# flora-auth-jwt
+# @florajs/auth-jwt
 
 ![](https://github.com/florajs/auth-jwt/workflows/ci/badge.svg)
-[![NPM version](https://img.shields.io/npm/v/flora-auth-jwt.svg?style=flat)](https://www.npmjs.com/package/flora-auth-jwt)
-[![NPM downloads](https://img.shields.io/npm/dm/flora-auth-jwt.svg?style=flat)](https://www.npmjs.com/package/flora-auth-jwt)
+[![NPM version](https://img.shields.io/npm/v/@florajs/auth-jwt.svg?style=flat)](https://www.npmjs.com/package/@florajs/auth-jwt)
+[![NPM downloads](https://img.shields.io/npm/dm/@florajs/auth-jwt.svg?style=flat)](https://www.npmjs.com/package/@florajs/auth-jwt)
 
 JSON Web Token authentication for Flora.
 
@@ -31,8 +31,8 @@ When further processing is needed, an async `validate` function can be specified
 ## Example
 
 ```js
-const flora = require('flora');
-const floraAuthJwt = require('flora-auth-jwt');
+const flora = require('@florajs/flora');
+const floraAuthJwt = require('@florajs/auth-jwt');
 
 const server = new flora.Server('./config.js');
 

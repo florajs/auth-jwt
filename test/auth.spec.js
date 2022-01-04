@@ -4,7 +4,7 @@ const PromiseEventEmitter = require('promise-events');
 const log = require('abstract-logging');
 const jwt = require('jsonwebtoken');
 const { expect } = require('chai');
-const { AuthenticationError } = require('flora-errors');
+const { AuthenticationError } = require('@florajs/errors');
 
 const floraAuthJwt = require('../');
 
@@ -15,7 +15,7 @@ class ApiMock extends PromiseEventEmitter {
     }
 }
 
-describe('flora-auth-jwt', () => {
+describe('auth-jwt', () => {
     let api;
     const secret = 'mySecret';
 
