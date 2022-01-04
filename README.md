@@ -1,6 +1,6 @@
 # flora-auth-jwt
 
-![](https://github.com/godmodelabs/flora-auth-jwt/workflows/ci/badge.svg)
+![](https://github.com/florajs/auth-jwt/workflows/ci/badge.svg)
 [![NPM version](https://img.shields.io/npm/v/flora-auth-jwt.svg?style=flat)](https://www.npmjs.com/package/flora-auth-jwt)
 [![NPM downloads](https://img.shields.io/npm/dm/flora-auth-jwt.svg?style=flat)](https://www.npmjs.com/package/flora-auth-jwt)
 

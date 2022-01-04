@@ -17,7 +17,7 @@
     "email": "it@boerse-go.de"
   },
   "license": "MIT",
-  "repository": "godmodelabs/flora-auth-jwt",
+  "repository": "florajs/auth-jwt",
   "contributors": [
     {
       "name": "Nico Kaiser",
