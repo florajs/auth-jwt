@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "jsonwebtoken": "^9.0.1",
-    "@florajs/errors": "^3.0.0"
+    "@florajs/errors": "^4.0.0"
   },
   "devDependencies": {
     "abstract-logging": "^2.0.1",
