@@ -4,7 +4,7 @@ const PromiseEventEmitter = require('promise-events');
 const log = require('abstract-logging');
 const jwt = require('jsonwebtoken');
 const { expect } = require('chai');
-const { AuthenticationError } = require('@florajs/errors');
+const { AuthenticationError, RequestError } = require('@florajs/errors');
 
 const floraAuthJwt = require('../');
 
@@ -67,6 +67,67 @@ describe('auth-jwt', () => {
         floraAuthJwt(api, { secret });
         await api.emit('request', { request });
         expect(request._auth).to.eql({ foo: 'bar' });
+    });
+
+    it('decodes JWT in HTTP header', async () => {
+        const token = jwt.sign(
+            {
+                foo: 'bar'
+            },
+            secret,
+            {
+                noTimestamp: true,
+                algorithm: 'HS256'
+            }
+        );
+        const request = {
+            _httpRequest: { headers: { authorization: 'Bearer ' + token } }
+        };
+        floraAuthJwt(api, { secret });
+        await api.emit('request', { request });
+        expect(request._auth).to.eql({ foo: 'bar' });
+    });
+
+    it('throws when HTTP header is malformed', (done) => {
+        const request = {
+            _httpRequest: { headers: { authorization: 'Bearer invalid' } }
+        };
+        floraAuthJwt(api, { secret });
+
+        api.emit('request', { request })
+            .then(() => {
+                done(new Error('Error should have been thrown'));
+            })
+            .catch((err) => {
+                expect(err).to.be.instanceOf(RequestError);
+                done();
+            });
+    });
+
+    it('do nothing HTTP header type is wrong', async () => {
+        const request = {
+            _httpRequest: { headers: { authorization: 'foo invalid.invalid.invalid' } }
+        };
+        floraAuthJwt(api, { secret });
+
+        await api.emit('request', { request });
+        expect(request._auth).to.not.exist;
+    });
+
+    it('throws when token in HTTP header is invalid', (done) => {
+        const request = {
+            _httpRequest: { headers: { authorization: 'Bearer invalid.invalid.invalid' } }
+        };
+        floraAuthJwt(api, { secret });
+
+        api.emit('request', { request })
+            .then(() => {
+                done(new Error('Error should have been thrown'));
+            })
+            .catch((err) => {
+                expect(err).to.be.instanceOf(AuthenticationError);
+                done();
+            });
     });
 
     it('decodes JWT when secret is a function', async () => {
@@ -216,5 +277,15 @@ describe('auth-jwt', () => {
                 expect(err.code).to.eql('ERR_MISSING_TOKEN');
                 done();
             });
+    });
+
+    it('expect validate function to be called', async () => {
+        const request = {};
+        floraAuthJwt(api, {
+            secret: 'mySecret',
+            validate: async () => 'validate_executed'
+        });
+        await api.emit('request', { request });
+        expect(request._auth).to.equal('validate_executed');
     });
 });

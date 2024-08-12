@@ -91,7 +91,7 @@ module.exports = (api, options) => {
         if (request._httpRequest && request._httpRequest.headers.authorization) {
             const parts = request._httpRequest.headers.authorization.split(' ');
             if (parts.length !== 2) throw new RequestError('Bad HTTP authentication header format');
-            if (parts[0].toLowerCase() !== 'bearer') return null;
+            if (parts[0].toLowerCase() !== 'bearer') return decode(null);
             if (parts[1].split('.').length !== 3) {
                 throw new RequestError('Bad HTTP authentication header format');
             }
