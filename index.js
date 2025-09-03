@@ -3,9 +3,15 @@
 const jwt = require('jsonwebtoken');
 const { AuthenticationError, RequestError } = require('@florajs/errors');
 
-function verify(token, secret, options) {
+/**
+ * @param {string} token
+ * @param {string | jwt.GetPublicKeyOrSecret} secretOrPublicKey
+ * @param {jwt.VerifyOptions} options
+ * @returns {jwt.JwtPayload}
+ */
+function verify(token, secretOrPublicKey, options) {
     return new Promise((resolve, reject) => {
-        jwt.verify(token, secret, options, (err, decoded) => {
+        jwt.verify(token, secretOrPublicKey, options, (err, decoded) => {
             if (err) return reject(err);
             return resolve(decoded);
         });
@@ -13,11 +19,8 @@ function verify(token, secret, options) {
 }
 
 /**
- * @param {flora.Api} api - Api instance
- * @param {object} options - Plugin options
- * @param {string|function} options.secret - JWT secret
- * @param {Array} [options.algorithms] - Allowed JWT algorithms
- * @param {boolean} [options.credentialsRequired] - Fail on requests without JWT (default: false)
+ * @param {import('flora').Api} api - Api instance
+ * @param {{ secret: string | jwt.GetPublicKeyOrSecret; algorithms?: string[]; credentialsRequired?: boolean; validate?: (decoded: any, request: import('flora').Request) => Promise<any> }} options
  */
 module.exports = (api, options) => {
     if (typeof options !== 'object') throw new Error('options must be an object');
@@ -27,14 +30,14 @@ module.exports = (api, options) => {
 
     api.on('request', async ({ request }) => {
         /**
-         * Decode and verify JSON Web Token
-         * @private
+         * @param {string} token
          */
         async function decode(token) {
             let decoded = null;
             if (token) {
                 api.log.trace('Verifying JWT: ' + token);
 
+                /** @type {{ algorithms?: string[] }} */
                 const verifyOptions = {};
                 if (options.algorithms) verifyOptions.algorithms = options.algorithms;
 
