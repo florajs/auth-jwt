@@ -39,9 +39,9 @@
   },
   "devDependencies": {
     "abstract-logging": "^2.0.1",
-    "eslint": "^9.31.0",
+    "eslint": "^9.34.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.3",
+    "eslint-plugin-prettier": "^5.5.4",
     "pre-commit": "^1.2.2",
     "prettier": "^3.6.2",
     "promise-events": "^0.2.4"
